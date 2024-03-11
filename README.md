@@ -30,12 +30,93 @@ Step 7: Save and run the application.
 ```
 /*
 Program to print the contact name and phone number using content providers.
-Developed by:
-Registeration Number :
+Developed by: Kayyuru Tharani
+Registeration Number : 212221040080
 */
+```
+### Activity_main.xml
+```
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="483dp"
+        android:onClick="btnGetContacts"
+        android:text="Get Contacts Details" />
+
+</RelativeLayout>
+```
+### MainActivity.java
+
+```
+
+package com.example.contentprovider;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
+import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+    }
+    public void btnGetContacts(View v){
+        getPhoneContacts();
+    }
+    private void getPhoneContacts(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},0);
+        }
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        Cursor cursor = contentResolver.query(uri,null,null,null,null,null);
+        Log.i("CONTACT_PROVIDER","TOTAL # of CONTACTS ::: "+Integer.toString(cursor.getCount()));
+
+        if(cursor.getCount()>0){
+            while(cursor.moveToNext()){
+                @SuppressLint("Range") String ContactName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                @SuppressLint("Range") String contactNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                Log.i("CONTACT_PROVIDER_DEMO","Contact Name ::: "+ ContactName+" - "+contactNumber);
+            }
+        }
+
+
+    }
+}
 ```
 
 ## OUTPUT
+
+![WhatsApp Image 2024-03-11 at 11 18 29_66563ba9](https://github.com/KayyuruTharani/contentprovider/assets/142209319/195ed8fa-9c5f-4d6c-be2a-112af3d74489)
+
+![Screenshot (119)](https://github.com/KayyuruTharani/contentprovider/assets/142209319/006e2b24-a735-436b-bcff-decd5ab7a0d0)
 
 
 
